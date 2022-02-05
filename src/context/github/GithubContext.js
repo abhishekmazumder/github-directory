@@ -20,17 +20,22 @@ export const GithubProvider = ({ children }) => {
 		});
 	};
 
-  //Get initial Users (Testing Purpose)
-	const fetchUsers = async () => {
-    setLoading();
-		const response = await fetch(`${GITHUB_URL}/users`);
-		const data = await response.json();
-		dispatch({ type: 'GET_USERS', payload: data });
+	// Search users
+	const searchUsers = async text => {
+		setLoading();
+		const response = await fetch(`${GITHUB_URL}/search/users?q=${text}`);
+		const { items } = await response.json();
+		dispatch({ type: 'GET_USERS', payload: items });
+	};
+
+	// Clear Users Result
+	const clearUsers = () => {
+		dispatch({ type: 'CLEAR_USERS' });
 	};
 
 	return (
 		<GithubContext.Provider
-			value={{ users: state.users, loading: state.loading, fetchUsers }}
+			value={{ users: state.users, loading: state.loading, searchUsers, clearUsers }}
 		>
 			{children}
 		</GithubContext.Provider>
